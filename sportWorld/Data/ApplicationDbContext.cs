@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using sportWorld.Models;
 
 namespace sportWorld.Data
 {
@@ -8,5 +9,7 @@ namespace sportWorld.Data
         {
             
         }
+
+        public DbSet<Category> Categories { get; set; }
     }
 }
