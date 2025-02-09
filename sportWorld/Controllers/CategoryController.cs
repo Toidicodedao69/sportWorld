@@ -29,8 +29,8 @@ namespace sportWorld.Controllers
             }
             if (ModelState.IsValid) // Validate before adding to db
             {
-				_db.Categories.Add(category);
-				_db.SaveChanges();
+				_db.Categories.Add(category); // The EF Core will keep track of change to db
+				_db.SaveChanges(); // Changes will only be executed on db when calling SaveChanges()
 				return RedirectToAction("Index");
 			}
             return View();

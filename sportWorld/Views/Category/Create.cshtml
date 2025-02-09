@@ -8,7 +8,7 @@
 			</h2>
 		</div>
 		<hr />
-		<div asp-validation-summary="All"></div> 
+		<div asp-validation-summary="ModelOnly"></div> 
 		<div class="mb-3 row p-1">
 			@* asp-for automatically detect type and fill out the label *@
 			<label asp-for="Name" class="p-0"></label>
@@ -33,3 +33,9 @@
 		</div>
 	</div>
 </form>
+
+@section Scripts {
+	@{
+	<partial name="_ValidationScriptsPartial" />
+	}
+}
