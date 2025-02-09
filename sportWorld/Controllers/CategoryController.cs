@@ -20,5 +20,12 @@ namespace sportWorld.Controllers
         {
             return View();
         }
+        [HttpPost] // Specify actions when the form is submitted 
+        public IActionResult Create(Category category)
+        {
+            _db.Categories.Add(category);
+            _db.SaveChanges();
+            return RedirectToAction("Index");
+        }
     }
 }
