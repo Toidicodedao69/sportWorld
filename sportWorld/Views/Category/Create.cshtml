@@ -8,14 +8,18 @@
 			</h2>
 		</div>
 		<hr />
+		<div asp-validation-summary="All"></div> 
 		<div class="mb-3 row p-1">
 			@* asp-for automatically detect type and fill out the label *@
 			<label asp-for="Name" class="p-0"></label>
 			<input asp-for="Name" class="form-control" />
+			<span asp-validation-for="Name" class="text-danger"></span>
 		</div>
 		<div class="mb-3 row p-1">
 			<label asp-for="DisplayOrder" class="p-0">Display Order</label>
 			<input asp-for="DisplayOrder" class="form-control" />
+			<span asp-validation-for="DisplayOrder" class="text-danger"></span>
+
 		</div>
 		<div class="row">
 			<div class="col-6 col-md-3">

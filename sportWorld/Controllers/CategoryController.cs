@@ -23,9 +23,18 @@ namespace sportWorld.Controllers
         [HttpPost] // Specify actions when the form is submitted 
         public IActionResult Create(Category category)
         {
-            _db.Categories.Add(category);
-            _db.SaveChanges();
-            return RedirectToAction("Index");
+            if (category.Name == category.DisplayOrder.ToString()) // Custom validation
+            {
+                ModelState.AddModelError("name", "Category Name can not match Display Order");
+            }
+            if (ModelState.IsValid) // Validate before adding to db
+            {
+				_db.Categories.Add(category);
+				_db.SaveChanges();
+				return RedirectToAction("Index");
+			}
+            return View();
+
         }
     }
 }
