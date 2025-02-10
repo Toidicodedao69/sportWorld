@@ -31,6 +31,7 @@ namespace sportWorld.Controllers
             {
 				_db.Categories.Add(category); // The EF Core will keep track of change to db
 				_db.SaveChanges(); // Changes will only be executed on db when calling SaveChanges()
+				TempData["success"] = "Category created successfully!"; // Show notification for only 1 render
 				return RedirectToAction("Index");
 			}
             return View();
@@ -59,6 +60,7 @@ namespace sportWorld.Controllers
 			{
 				_db.Categories.Update(category); // The EF Core will keep track of change to db
 				_db.SaveChanges(); // Changes will only be executed on db when calling SaveChanges()
+				TempData["success"] = "Category updated successfully!"; // Show notification for only 1 render
 				return RedirectToAction("Index");
 			}
 			return View();
@@ -79,7 +81,7 @@ namespace sportWorld.Controllers
 			return View(categoryFromDb);
 		}
 		[HttpPost, ActionName("Delete")] // Specify actions when the form is submitted 
-		public IActionResult DeletePOST(int? id)
+		public IActionResult DeletePOST(int? id) // This action method's name is still "Delete" as specified in ActionName annotation
 		{
 			Category? obj = _db.Categories.Find(id);
 
@@ -90,6 +92,7 @@ namespace sportWorld.Controllers
 
 			_db.Categories.Remove(obj);
 			_db.SaveChanges();
+			TempData["success"] = "Category deleted successfully!"; // Show notification for only 1 render
 			return RedirectToAction("Index");
 		}
 	}
