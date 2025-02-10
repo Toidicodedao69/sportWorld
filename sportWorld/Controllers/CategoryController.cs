@@ -34,7 +34,35 @@ namespace sportWorld.Controllers
 				return RedirectToAction("Index");
 			}
             return View();
-
         }
-    }
+		public IActionResult Edit(int? id)
+		{
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            Category? categoryFromDb = _db.Categories.Find(id);
+            // Other method to get category from db
+            // Category? categoryFromDb2 = _db.Categories.FirstOrDefault(u => u.Id == id);
+            // Category? categoryFromDb3 = _db.Categories.Where(u=>u.Id == id).FirstOrDefault();
+
+            if (categoryFromDb == null)
+            {
+                return NotFound();
+            }
+			return View(categoryFromDb);
+		}
+		[HttpPost] // Specify actions when the form is submitted 
+		public IActionResult Edit(Category category)
+		{
+			if (ModelState.IsValid) // Validate before adding to db
+			{
+				_db.Categories.Update(category); // The EF Core will keep track of change to db
+				_db.SaveChanges(); // Changes will only be executed on db when calling SaveChanges()
+				return RedirectToAction("Index");
+			}
+			return View();
+
+		}
+	}
 }
