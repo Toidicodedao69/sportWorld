@@ -4,7 +4,7 @@
 	<div class="border p-3 mt-4">
 		<div class="mb-3">
 			<h2 class="text-primary">
-				Edit Category
+				Delete Category
 			</h2>
 		</div>
 		<hr />
@@ -13,17 +13,17 @@
 		<div class="mb-3 row p-1">
 			@* asp-for automatically detect type and fill out the label *@
 			<label asp-for="Name" class="p-0"></label>
-			<input asp-for="Name" class="form-control" />
+			<input asp-for="Name" disabled class="form-control" />
 			<span asp-validation-for="Name" class="text-danger"></span>
 		</div>
 		<div class="mb-3 row p-1">
 			<label asp-for="DisplayOrder" class="p-0">Display Order</label>
-			<input asp-for="DisplayOrder" class="form-control" />
+			<input asp-for="DisplayOrder" disabled class="form-control" />
 			<span asp-validation-for="DisplayOrder" class="text-danger"></span>
 		</div>
 		<div class="row">
 			<div class="col-6 col-md-3">
-				<button class="btn btn-primary form-control" type="submit">Update</button>
+				<button class="btn btn-danger form-control" type="submit">Delete</button>
 			</div>
 			<div class="col-6 col-md-3">
 				<a asp-controller="Category" asp-action="Index" class="btn btn-outline-secondary form-control">
