@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using sportWorld.Data;
+using sportWorld.DataAccess.Data;
 
 #nullable disable
 
-namespace sportWorld.Migrations
+namespace sportWorld.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20250208170551_SeedCategoryTable")]

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using sportWorld.Models;
 
-namespace sportWorld.Data
+namespace sportWorld.DataAccess.Data
 {
     public class ApplicationDbContext : DbContext
     {

@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using sportWorld.Data;
+using sportWorld.DataAccess.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace sportWorld.Migrations
+namespace sportWorld.DataAccess.Migrations
 {
     /// <inheritdoc />
     public partial class AddCategoryTable : Migration

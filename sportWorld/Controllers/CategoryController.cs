@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using sportWorld.Data;
+using sportWorld.DataAccess.Data;
 using sportWorld.Models;
 
 namespace sportWorld.Controllers

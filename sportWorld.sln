@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.34916.146
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sportWorld", "sportWorld\sportWorld.csproj", "{D2668A2B-396F-49A4-91E1-BAC195029F39}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sportWorld", "sportWorld\sportWorld.csproj", "{D2668A2B-396F-49A4-91E1-BAC195029F39}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sportWorld.DataAccess", "sportWorld.DataAccess\sportWorld.DataAccess.csproj", "{F19248FF-FA4B-4606-8D3A-7178C4E76C48}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sportWorld.Models", "sportWorld.Models\sportWorld.Models.csproj", "{FA0E2A45-ACAC-4889-8DE5-B39498465CCC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sportWorld.Utility", "sportWorld.Utility\sportWorld.Utility.csproj", "{010B4E77-7407-4C66-B24D-BB245173576C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +21,18 @@ Global
 		{D2668A2B-396F-49A4-91E1-BAC195029F39}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2668A2B-396F-49A4-91E1-BAC195029F39}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2668A2B-396F-49A4-91E1-BAC195029F39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F19248FF-FA4B-4606-8D3A-7178C4E76C48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F19248FF-FA4B-4606-8D3A-7178C4E76C48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F19248FF-FA4B-4606-8D3A-7178C4E76C48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F19248FF-FA4B-4606-8D3A-7178C4E76C48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA0E2A45-ACAC-4889-8DE5-B39498465CCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA0E2A45-ACAC-4889-8DE5-B39498465CCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA0E2A45-ACAC-4889-8DE5-B39498465CCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA0E2A45-ACAC-4889-8DE5-B39498465CCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{010B4E77-7407-4C66-B24D-BB245173576C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{010B4E77-7407-4C66-B24D-BB245173576C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{010B4E77-7407-4C66-B24D-BB245173576C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{010B4E77-7407-4C66-B24D-BB245173576C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
