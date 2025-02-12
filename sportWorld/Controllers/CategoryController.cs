@@ -6,14 +6,14 @@ namespace sportWorld.Controllers
 {
 	public class CategoryController : Controller
 	{
-		private readonly ICategoryRepository _categoryRepo;
-		public CategoryController(ICategoryRepository db)
+		private readonly IUnitOfWork _unitOfWork;
+		public CategoryController(IUnitOfWork unitOfWork)
 		{
-			_categoryRepo = db;
+			_unitOfWork = unitOfWork;
 		}
 		public IActionResult Index()
 		{
-			List<Category> CategoryList = _categoryRepo.GetAll().ToList();
+			List<Category> CategoryList = _unitOfWork.Category.GetAll().ToList();
 			return View(CategoryList);
 		}
 		public IActionResult Create()
@@ -29,8 +29,8 @@ namespace sportWorld.Controllers
 			}
 			if (ModelState.IsValid) // Validate before adding to db
 			{
-				_categoryRepo.Add(category); // The EF Core will keep track of change to db
-				_categoryRepo.Save(); // Changes will only be executed on db when calling SaveChanges()
+				_unitOfWork.Category.Add(category); // The EF Core will keep track of change to db
+				_unitOfWork.Save(); // Changes will only be executed on db when calling SaveChanges()
 				TempData["success"] = "Category created successfully!"; // Show notification for only 1 render
 				return RedirectToAction("Index");
 			}
@@ -42,10 +42,10 @@ namespace sportWorld.Controllers
 			{
 				return NotFound();
 			}
-			Category? categoryFromDb = _categoryRepo.Get(u => u.Id == id);
+			Category? categoryFromDb = _unitOfWork.Category.Get(u => u.Id == id);
 			// Other method to get category from db
-			// Category? categoryFromDb2 = _categoryRepo.Categories.FirstOrDefault(u => u.Id == id);
-			// Category? categoryFromDb3 = _categoryRepo.Categories.Where(u=>u.Id == id).FirstOrDefault();
+			// Category? categoryFromDb2 = _unitOfWork.Categories.FirstOrDefault(u => u.Id == id);
+			// Category? categoryFromDb3 = _unitOfWork.Categories.Where(u=>u.Id == id).FirstOrDefault();
 
 			if (categoryFromDb == null)
 			{
@@ -58,8 +58,8 @@ namespace sportWorld.Controllers
 		{
 			if (ModelState.IsValid) // Validate before adding to db
 			{
-				_categoryRepo.Update(category); // The EF Core will keep track of change to db
-				_categoryRepo.Save(); // Changes will only be executed on db when calling SaveChanges()
+				_unitOfWork.Category.Update(category); // The EF Core will keep track of change to db
+				_unitOfWork.Save(); // Changes will only be executed on db when calling SaveChanges()
 				TempData["success"] = "Category updated successfully!"; // Show notification for only 1 render
 				return RedirectToAction("Index");
 			}
@@ -72,7 +72,7 @@ namespace sportWorld.Controllers
 			{
 				return NotFound();
 			}
-			Category? categoryFromDb = _categoryRepo.Get(u => u.Id == id);
+			Category? categoryFromDb = _unitOfWork.Category.Get(u => u.Id == id);
 
 			if (categoryFromDb == null)
 			{
@@ -83,15 +83,15 @@ namespace sportWorld.Controllers
 		[HttpPost, ActionName("Delete")] // Specify actions when the form is submitted 
 		public IActionResult DeletePOST(int? id) // This action method's name is still "Delete" as specified in ActionName annotation
 		{
-			Category? obj = _categoryRepo.Get(u => u.Id == id);
+			Category? obj = _unitOfWork.Category.Get(u => u.Id == id);
 
 			if (obj == null)
 			{
 				return NotFound();
 			}
 
-			_categoryRepo.Remove(obj);
-			_categoryRepo.Save();
+			_unitOfWork.Category.Remove(obj);
+			_unitOfWork.Save();
 			TempData["success"] = "Category deleted successfully!"; // Show notification for only 1 render
 			return RedirectToAction("Index");
 		}
