@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using sportWorld.Models;
 using System.Diagnostics;
 
-namespace sportWorld.Controllers
+namespace sportWorld.Areas.Customer.Controllers
 {
     public class HomeController : Controller
     {
