@@ -26,12 +26,8 @@ namespace sportWorld.Models
         [Range(0, 1000)]
         public double Price { get; set; }
 
-        [Display(Name = "Price 20-50")]
+        [Display(Name = "Price 20+")]
         [Range(0, 1000)]
         public double Price20 { get; set; }
-        [Display(Name = "Price 50+")]
-        [Range(0, 1000)]
-        public double Price50 { get; set; }
-
     }
 }
