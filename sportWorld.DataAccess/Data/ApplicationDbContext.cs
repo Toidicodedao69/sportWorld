@@ -15,9 +15,9 @@ namespace sportWorld.DataAccess.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Category>().HasData(
-                new Category { Id = 1, Name = "Light-head", DisplayOrder = 1 },
-                new Category { Id = 2, Name = "Head-heavy", DisplayOrder = 2 },
-                new Category { Id = 3, Name = "Balanced", DisplayOrder = 3 }
+                new Category { Id = 1, Name = "Badminton Racquet", DisplayOrder = 1 },
+                new Category { Id = 2, Name = "Badminton Shoe", DisplayOrder = 2 },
+                new Category { Id = 3, Name = "Badminton Bag", DisplayOrder = 3 }
                 );
 
             modelBuilder.Entity<Product>().HasData(
@@ -29,7 +29,9 @@ namespace sportWorld.DataAccess.Data
                     Brand = "Yonex",
                     ListPrice = 300,
                     Price = 289,
-                    Price20 = 260
+                    Price20 = 260,
+                    CategoryId = 1,
+                    ImageUrl=""
                 },
                 new Product
                 { 
@@ -39,7 +41,9 @@ namespace sportWorld.DataAccess.Data
                     Brand = "Victor",
                     ListPrice = 290,
                     Price = 279,
-                    Price20 = 250
+                    Price20 = 250,
+                    CategoryId = 1,
+                    ImageUrl = ""
                 },
                 new Product
                 { 
@@ -49,7 +53,9 @@ namespace sportWorld.DataAccess.Data
                     Brand = "Yonex",
                     ListPrice = 250,
                     Price = 239,
-                    Price20 = 210
+                    Price20 = 210,
+                    CategoryId = 2,
+                    ImageUrl = ""
                 }
                 );
         }

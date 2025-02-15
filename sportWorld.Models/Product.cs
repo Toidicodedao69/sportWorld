@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace sportWorld.Models
 {
@@ -29,5 +30,11 @@ namespace sportWorld.Models
         [Display(Name = "Price 20+")]
         [Range(0, 1000)]
         public double Price20 { get; set; }
+
+        // Access Category Name through foreign key
+        public int CategoryId { get; set; }
+        [ForeignKey("CategoryId")]
+        public Category Category { get; set; }
+        public string ImageUrl { get; set; }
     }
 }
