@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace sportWorld.Models
 {
@@ -34,6 +35,7 @@ namespace sportWorld.Models
         // Access Category Name through foreign key
         public int CategoryId { get; set; }
         [ForeignKey("CategoryId")]
+        [ValidateNever] // Turn off validation
         public Category Category { get; set; }
         public string ImageUrl { get; set; }
     }

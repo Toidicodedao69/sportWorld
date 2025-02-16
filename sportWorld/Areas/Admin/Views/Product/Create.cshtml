@@ -1,4 +1,4 @@
-﻿@model Product
+﻿@model ProductVM
 
 <form method="post">
 	<div class="border p-3 mt-4">
@@ -12,36 +12,48 @@
 
 		<div class="mb-3 row p-1">
 			@* asp-for automatically detect type and fill out the label *@
-			<label asp-for="Name" class="p-0"></label>
-			<input asp-for="Name" class="form-control" />
-			<span asp-validation-for="Name" class="text-danger"></span>
+			<label asp-for="Product.Name" class="p-0"></label>
+			<input asp-for="Product.Name" class="form-control" />
+			<span asp-validation-for="Product.Name" class="text-danger"></span>
 		</div>
 		<div class="mb-3 row p-1">
-			<label asp-for="Description" class="p-0"></label>
-			<textarea asp-for="Description" class="form-control" ></textarea>
-			<span asp-validation-for="Description" class="text-danger"></span>
-		</div>
-		<div class="mb-3 row p-1">
-			@* asp-for automatically detect type and fill out the label *@
-			<label asp-for="Brand" class="p-0"></label>
-			<input asp-for="Brand" class="form-control" />
-			<span asp-validation-for="Brand" class="text-danger"></span>
-		</div>
-		<div class="mb-3 row p-1">
-			<label asp-for="ListPrice" class="p-0"></label>
-			<input asp-for="ListPrice" class="form-control" />
-			<span asp-validation-for="ListPrice" class="text-danger"></span>
+			<label asp-for="Product.Description" class="p-0"></label>
+			<textarea asp-for="Product.Description" class="form-control" ></textarea>
+			<span asp-validation-for="Product.Description" class="text-danger"></span>
 		</div>
 		<div class="mb-3 row p-1">
 			@* asp-for automatically detect type and fill out the label *@
-			<label asp-for="Price" class="p-0"></label>
-			<input asp-for="Price" class="form-control" />
-			<span asp-validation-for="Price" class="text-danger"></span>
+			<label asp-for="Product.Brand" class="p-0"></label>
+			<input asp-for="Product.Brand" class="form-control" />
+			<span asp-validation-for="Product.Brand" class="text-danger"></span>
 		</div>
 		<div class="mb-3 row p-1">
-			<label asp-for="Price20" class="p-0"></label>
-			<input asp-for="Price20" class="form-control" />
-			<span asp-validation-for="Price20" class="text-danger"></span>
+			<label asp-for="Product.ListPrice" class="p-0"></label>
+			<input asp-for="Product.ListPrice" class="form-control" />
+			<span asp-validation-for="Product.ListPrice" class="text-danger"></span>
+		</div>
+		<div class="mb-3 row p-1">
+			@* asp-for automatically detect type and fill out the label *@
+			<label asp-for="Product.Price" class="p-0"></label>
+			<input asp-for="Product.Price" class="form-control" />
+			<span asp-validation-for="Product.Price" class="text-danger"></span>
+		</div>
+		<div class="mb-3 row p-1">
+			<label asp-for="Product.Price20" class="p-0"></label>
+			<input asp-for="Product.Price20" class="form-control" />
+			<span asp-validation-for="Product.Price20" class="text-danger"></span>
+		</div>
+		<div class="mb-3 row p-1">
+			<label asp-for="Product.CategoryId" class="p-0"></label>
+			<select asp-for="Product.CategoryId" asp-items="@Model.CategoryList" class="form-select" >
+				<option disabled selected>--Select Category--</option>
+			</select>
+			<span asp-validation-for="Product.CategoryId" class="text-danger"></span>
+		</div>
+		<div class="mb-3 row p-1">
+			<label asp-for="Product.ImageUrl" class="p-0"></label>
+			<input asp-for="Product.ImageUrl" class="form-control" />
+			<span asp-validation-for="Product.ImageUrl" class="text-danger"></span>
 		</div>
 
 		<div class="row">
