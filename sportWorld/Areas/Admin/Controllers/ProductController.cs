@@ -22,16 +22,6 @@ namespace sportWorld.Areas.Admin.Controllers
 		public IActionResult Upsert(int? id)
 		{
 			//ViewBag.CategoryList = CategoryList; // Transfer data to View and only last during current http request
-			Product product;
-			if (id == 0 || id == null)
-			{
-				product = new Product();
-			}
-			else
-			{
-				product = _unitOfWork.Product.Get(u => u.Id == id);
-			}
-
 			ProductVM productVM = new()
 			{
 				CategoryList = _unitOfWork.Category     // Projection in EF Core to dynamically convert each Category object to SelectListItem
@@ -40,14 +30,23 @@ namespace sportWorld.Areas.Admin.Controllers
 					Text = u.Name,
 					Value = u.Id.ToString()
 				}),
-				Product = product
+				Product = new Product()
 			};
 
-			return View(productVM);
-
+			if (id == 0 || id == null)
+			{
+				// Create
+				return View(productVM);
+			}
+			else
+			{
+				// Update
+				productVM.Product = _unitOfWork.Product.Get(u => u.Id == id);
+				return View(productVM);
+			}
 		}
 		[HttpPost] // Specify actions when the form is submitted 
-		public IActionResult Create(ProductVM productVM)
+		public IActionResult Upsert(ProductVM productVM, IFormFile? file)
 		{
 			if (ModelState.IsValid) // Validate before adding to db
 			{
