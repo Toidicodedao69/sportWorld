@@ -9,9 +9,11 @@ namespace sportWorld.Areas.Admin.Controllers
 	public class ProductController : Controller
 	{
 		private readonly IUnitOfWork _unitOfWork;
-		public ProductController(IUnitOfWork unitOfWork)
+		private readonly IWebHostEnvironment _webHostEnvironment;
+		public ProductController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
 		{
 			_unitOfWork = unitOfWork;
+			_webHostEnvironment = webHostEnvironment;
 		}
 		public IActionResult Index()
 		{
@@ -50,6 +52,21 @@ namespace sportWorld.Areas.Admin.Controllers
 		{
 			if (ModelState.IsValid) // Validate before adding to db
 			{
+				string wwwRootPath = _webHostEnvironment.WebRootPath;
+
+				if (file != null)
+				{
+					string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+					string productPath = Path.Combine(wwwRootPath, @"images\product");
+
+					using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
+					{
+						file.CopyTo(fileStream);
+					}
+
+					productVM.Product.ImageUrl = @"\images\product\" + fileName;
+				}
+
 				_unitOfWork.Product.Add(productVM.Product); // The EF Core will keep track of change to db
 				_unitOfWork.Save(); // Changes will only be executed on db when calling SaveChanges()
 				TempData["success"] = "Product created successfully!"; // Show notification for only 1 render

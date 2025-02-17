@@ -37,6 +37,7 @@ namespace sportWorld.Models
         [ForeignKey("CategoryId")]
         [ValidateNever] // Turn off validation
         public Category Category { get; set; }
+        [ValidateNever]
         public string ImageUrl { get; set; }
     }
 }
