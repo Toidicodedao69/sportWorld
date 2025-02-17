@@ -20,8 +20,4 @@
     <ProjectReference Include="..\sportWorld.DataAccess\sportWorld.DataAccess.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>
