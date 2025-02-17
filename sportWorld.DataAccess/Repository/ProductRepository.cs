@@ -19,7 +19,22 @@ namespace sportWorld.DataAccess.Repository
 
         public void Update(Product product)
         {
-            _db.Products.Update(product);
+            // Custom update by manually mapping properties
+            var productFromDb = _db.Products.FirstOrDefault(u=> u.Id == product.Id);
+            if (productFromDb != null)
+            {
+                productFromDb.Brand = product.Brand;
+                productFromDb.Name = product.Name;
+                productFromDb.Description = product.Description;
+                productFromDb.CategoryId = product.CategoryId;
+                productFromDb.ListPrice = product.ListPrice;
+                productFromDb.Price = product.Price;
+                productFromDb.Price20 = product.Price20;
+                if (product.ImageUrl != null)
+                {
+                    productFromDb.ImageUrl = product.ImageUrl;
+                }
+            }
         }
     }
 }

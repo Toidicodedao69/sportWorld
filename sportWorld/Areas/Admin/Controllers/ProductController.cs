@@ -59,6 +59,16 @@ namespace sportWorld.Areas.Admin.Controllers
 					string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
 					string productPath = Path.Combine(wwwRootPath, @"images\product");
 
+					if (!string.IsNullOrEmpty(productVM.Product.ImageUrl))
+					{
+						var oldPath = Path.Combine(wwwRootPath, productVM.Product.ImageUrl.TrimStart('\\'));
+
+						if (System.IO.File.Exists(oldPath))
+						{
+							System.IO.File.Delete(oldPath);
+						}
+					}
+
 					using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
 					{
 						file.CopyTo(fileStream);
@@ -67,9 +77,17 @@ namespace sportWorld.Areas.Admin.Controllers
 					productVM.Product.ImageUrl = @"\images\product\" + fileName;
 				}
 
-				_unitOfWork.Product.Add(productVM.Product); // The EF Core will keep track of change to db
+				if (productVM.Product.Id == 0)
+				{
+					_unitOfWork.Product.Add(productVM.Product); // The EF Core will keep track of change to db
+					TempData["success"] = "Product created successfully!"; // Show notification for only 1 render
+				}
+				else
+				{
+					_unitOfWork.Product.Update(productVM.Product); // The EF Core will keep track of change to db
+					TempData["success"] = "Product updated successfully!"; // Show notification for only 1 render
+				}
 				_unitOfWork.Save(); // Changes will only be executed on db when calling SaveChanges()
-				TempData["success"] = "Product created successfully!"; // Show notification for only 1 render
 				return RedirectToAction("Index");
 			}
 			else
