@@ -17,7 +17,7 @@ namespace sportWorld.Areas.Admin.Controllers
 		}
 		public IActionResult Index()
 		{
-			List<Product> ProductList = _unitOfWork.Product.GetAll().ToList();
+			List<Product> ProductList = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
 
 			return View(ProductList);
 		}
@@ -104,33 +104,7 @@ namespace sportWorld.Areas.Admin.Controllers
 				return View(productVM);
 			}
 		}
-		public IActionResult Edit(int? id)
-		{
-			if (id == null || id == 0)
-			{
-				return NotFound();
-			}
-			Product? productFromDb = _unitOfWork.Product.Get(u => u.Id == id);
-
-			if (productFromDb == null)
-			{
-				return NotFound();
-			}
-			return View(productFromDb);
-		}
-		[HttpPost] // Specify actions when the form is submitted 
-		public IActionResult Edit(Product product)
-		{
-			if (ModelState.IsValid) // Validate before adding to db
-			{
-				_unitOfWork.Product.Update(product); // The EF Core will keep track of change to db
-				_unitOfWork.Save(); // Changes will only be executed on db when calling SaveChanges()
-				TempData["success"] = "Product updated successfully!"; // Show notification for only 1 render
-				return RedirectToAction("Index");
-			}
-			return View();
-
-		}
+		
 		public IActionResult Delete(int? id)
 		{
 			if (id == null || id == 0)
