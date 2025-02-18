@@ -134,5 +134,15 @@ namespace sportWorld.Areas.Admin.Controllers
 			TempData["success"] = "Product deleted successfully!"; // Show notification for only 1 render
 			return RedirectToAction("Index");
 		}
-	}
+
+		#region API CALLS
+		[HttpGet]
+        public IActionResult GetAll()
+        {
+            List<Product> ProductList = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
+
+            return Json(new { data = ProductList });
+        }
+        #endregion
+    }
 }
