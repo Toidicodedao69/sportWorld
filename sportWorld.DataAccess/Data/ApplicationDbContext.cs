@@ -1,10 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using sportWorld.Models;
 
 namespace sportWorld.DataAccess.Data
 {
-    public class ApplicationDbContext : DbContext
-    {
+    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
+	{
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
@@ -14,7 +16,9 @@ namespace sportWorld.DataAccess.Data
         public DbSet<Product> Products { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Category>().HasData(
+			base.OnModelCreating(modelBuilder); // Required if using identityDbContext
+
+			modelBuilder.Entity<Category>().HasData(
                 new Category { Id = 1, Name = "Badminton Racquet", DisplayOrder = 1 },
                 new Category { Id = 2, Name = "Badminton Shoe", DisplayOrder = 2 },
                 new Category { Id = 3, Name = "Badminton Bag", DisplayOrder = 3 }
