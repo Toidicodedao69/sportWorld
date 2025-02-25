@@ -29,8 +29,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
-app.UseAuthorization();
+app.UseAuthentication(); // Check for valid login credentials
+app.UseAuthorization();  // Give persmissions based on user roles (customer, manager, admin, etc.)
 
 app.MapControllerRoute(
     name: "default",

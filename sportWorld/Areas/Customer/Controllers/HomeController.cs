@@ -5,6 +5,7 @@ using System.Diagnostics;
 
 namespace sportWorld.Areas.Customer.Controllers
 {
+    [Area("Customer")] // Associate the controller with the area
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
