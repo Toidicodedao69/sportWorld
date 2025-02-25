@@ -12,7 +12,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
-
+builder.Services.AddRazorPages();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
@@ -31,6 +31,8 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication(); // Check for valid login credentials
 app.UseAuthorization();  // Give persmissions based on user roles (customer, manager, admin, etc.)
+
+app.MapRazorPages(); // Map Razor pages routing for identity area
 
 app.MapControllerRoute(
     name: "default",
