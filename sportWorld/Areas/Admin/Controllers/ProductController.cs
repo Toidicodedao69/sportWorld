@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using sportWorld.DataAccess.Repository.IRepository;
 using sportWorld.Models;
 using sportWorld.Models.ViewModels;
+using sportWorld.Utility;
 
 namespace sportWorld.Areas.Admin.Controllers
 {
 	[Area("Admin")]
+	[Authorize(Roles = SD.Role_Admin)] // Only Admin has access 
 	public class ProductController : Controller
 	{
 		private readonly IUnitOfWork _unitOfWork;
