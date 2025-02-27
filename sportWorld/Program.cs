@@ -18,9 +18,9 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     // This service must be placed AFTER Identity in order to work!!
     // Override default paths
-    options.LoginPath = $"Identity/Account/Login";
-    options.LogoutPath = $"Identity/Account/Logout";
-    options.AccessDeniedPath = $"Identity/Account/AccessDenied";
+    options.LoginPath = $"/Identity/Account/Login";
+    options.LogoutPath = $"/Identity/Account/Logout";
+    options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
 });
 
 builder.Services.AddRazorPages();
