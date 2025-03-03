@@ -38,6 +38,47 @@ namespace sportWorld.Areas.Customer.Controllers
 
             return View(cartVM);
         }
+		public IActionResult OrderSummary()
+		{
+			return View();
+		}
+		public IActionResult Plus(int cartId)
+		{
+			var cart = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId);
+
+			cart.Count += 1;
+			_unitOfWork.ShoppingCart.Update(cart);
+			_unitOfWork.Save();
+
+			return RedirectToAction(nameof(Index));
+		}
+		public IActionResult Minus(int cartId)
+		{
+			var cart = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId);
+
+			if (cart.Count == 1)
+			{
+				_unitOfWork.ShoppingCart.Remove(cart);
+			}
+			else
+			{
+				cart.Count -= 1;
+				_unitOfWork.ShoppingCart.Update(cart);
+			}
+
+			_unitOfWork.Save();
+
+			return RedirectToAction(nameof(Index));
+		}
+		public IActionResult Delete(int cartId)
+		{
+			var cart = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId);
+
+			_unitOfWork.ShoppingCart.Remove(cart);
+			_unitOfWork.Save();
+
+			return RedirectToAction(nameof(Index));
+		}
 
 		private double GetPriceBasedOnQuantity(ShoppingCart cart)
 		{
