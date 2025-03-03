@@ -19,9 +19,21 @@ namespace sportWorld.DataAccess.Repository
 			dbSet.Add(entity);
 		}
 
-		public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null)
+		public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked = false) 
 		{
-			IQueryable<T> query = dbSet;
+			IQueryable<T> query;
+
+			// EF Core automatically tracks changes to the retrieved query
+			// Here we manually specifies it
+			if (tracked)
+			{
+				query = dbSet;
+			}
+			else
+			{
+				query = dbSet.AsNoTracking();
+			}
+
 			query = query.Where(filter);
 
 			if (!string.IsNullOrEmpty(includeProperties))

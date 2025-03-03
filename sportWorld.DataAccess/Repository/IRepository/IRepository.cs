@@ -11,7 +11,7 @@ namespace sportWorld.DataAccess.Repository.IRepository
 	{
 		// Generic methods to access db
 		IEnumerable<T> GetAll(string? includeProperties = null);
-		T Get(Expression<Func<T, bool>> filter, string? includeProperties = null); // General syntax for FirstorDefault()
+		T Get(Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked = false); // General syntax for FirstorDefault()
 		void Add(T entity);
 		// void Update(T entity);  No update method because updating logic may be different between models (i.e Category vs Product)
 		void Remove(T entity);

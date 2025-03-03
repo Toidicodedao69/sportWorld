@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using sportWorld.DataAccess.Repository.IRepository;
 using sportWorld.Models;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace sportWorld.Areas.Customer.Controllers
 {
@@ -23,8 +25,42 @@ namespace sportWorld.Areas.Customer.Controllers
         }
 		public IActionResult Details(int productId)
 		{
-			Product product = _unitOfWork.Product.Get(u=>u.Id == productId, includeProperties: "Category");
-			return View(product);
+            ShoppingCart cart = new ()
+            {
+                Product = _unitOfWork.Product.Get(u => u.Id == productId, includeProperties: "Category"),
+                Count = 1,
+                ProductId = productId
+		    };
+
+			return View(cart);
+		}
+        [HttpPost]
+        [Authorize] // Must log in to add products
+		public IActionResult Details(ShoppingCart cart)
+		{
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            cart.ApplicationUserId = userId;
+
+            ShoppingCart cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.ApplicationUserId == userId && u.ProductId == cart.ProductId);
+
+            if (cartFromDb != null)
+            {
+                // Update cart
+                cartFromDb.Count += cart.Count;
+                _unitOfWork.ShoppingCart.Update(cartFromDb);
+            }
+            else
+            {
+				// Add new cart
+				_unitOfWork.ShoppingCart.Add(cart);
+			}
+
+			_unitOfWork.Save();
+            TempData["success"] = "Cart updated successfully";
+
+			return RedirectToAction(nameof(Index));     // nameof find all Action pages in the current Controller
 		}
 
 		public IActionResult Privacy()
