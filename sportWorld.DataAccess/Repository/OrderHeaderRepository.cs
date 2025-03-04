@@ -22,5 +22,34 @@ namespace sportWorld.DataAccess.Repository
 		{
 			_db.OrderHeaders.Update(orderHeader);
 		}
+
+		void IOrderHeaderRepository.UpdateStatus(int id, string orderStatus, string? paymentStatus)
+		{
+			var orderHeader = _db.OrderHeaders.FirstOrDefault(u => u.Id == id);
+
+			if (orderHeader != null)
+			{
+				orderHeader.OrderStatus = orderStatus;
+				if (!string.IsNullOrEmpty(paymentStatus))
+				{
+					orderHeader.PaymentStatus = paymentStatus;
+				}
+			}
+		}
+
+		void IOrderHeaderRepository.UpdateStripePaymentId(int id, string sessionId, string paymentIntentId)
+		{
+			var orderHeader = _db.OrderHeaders.FirstOrDefault(u => u.Id == id);
+
+			if (!string.IsNullOrEmpty(sessionId))
+			{
+				orderHeader.SessionId = sessionId;
+			}
+			if (!string.IsNullOrEmpty(paymentIntentId))
+			{
+				orderHeader.PaymentIntentId = paymentIntentId;
+				orderHeader.PaymentDate = DateTime.Now;
+			}
+		}
 	}
 }

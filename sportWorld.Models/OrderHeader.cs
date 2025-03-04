@@ -28,7 +28,9 @@ namespace sportWorld.Models
 
 		public DateTime PaymentDate { get; set; }
 		public DateOnly PaymentDueDate { get; set; }
-		public string? PaymentId { get; set; } // gets from Stripe
+
+		public string? PaymentIntentId { get; set; } // gets from Stripe
+		public string? SessionId { get; set; }
 
 		[Required]
 		public string Name { get; set; }

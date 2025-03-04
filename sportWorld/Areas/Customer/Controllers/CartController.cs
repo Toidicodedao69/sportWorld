@@ -5,6 +5,8 @@ using sportWorld.DataAccess.Repository.IRepository;
 using sportWorld.Models;
 using sportWorld.Models.ViewModels;
 using sportWorld.Utility;
+using Stripe;
+using Stripe.Checkout;
 using System.Net.Quic;
 using System.Security.Claims;
 
@@ -77,7 +79,8 @@ namespace sportWorld.Areas.Customer.Controllers
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
 			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-			cartVM.CartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Product").ToList();
+			cartVM.CartList = _unitOfWork.ShoppingCart
+				.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Product").ToList();
 
 			cartVM.OrderHeader.ApplicationUserId = userId;
 			cartVM.OrderHeader.OrderDate = System.DateTime.Now;
@@ -123,11 +126,77 @@ namespace sportWorld.Areas.Customer.Controllers
 
 			_unitOfWork.Save();
 
-			return RedirectToAction(nameof(OrderConfirmation), new { OrderHeaderId = cartVM.OrderHeader.Id });
+			if (applicationUser.CompanyId.GetValueOrDefault() == 0)
+			{
+				var domain = "https://localhost:7094";
+				// Customer user -> redirect to Stripe payment
+				var options = new SessionCreateOptions
+				{
+					SuccessUrl = domain + $"/Customer/Cart/OrderConfirmation?id={cartVM.OrderHeader.Id}",
+					CancelUrl = domain + "/Customer/Cart/Index",
+					LineItems = new List<SessionLineItemOptions>(),
+					Mode = "payment",
+				};
+
+				foreach(var cart in cartVM.CartList)
+				{
+					var lineItemOptions = new SessionLineItemOptions
+					{
+						PriceData = new SessionLineItemPriceDataOptions
+						{
+							UnitAmount = (long)(cart.Price * 100),
+							Currency = "aud",
+							ProductData = new SessionLineItemPriceDataProductDataOptions
+							{
+								Name = cart.Product.Name
+							}
+						},
+						Quantity = cart.Count
+					};
+					options.LineItems.Add(lineItemOptions);
+				}
+
+				var service = new SessionService();
+				Session session = service.Create(options);
+
+				// PaymentIntenId = null now, it will be populated once payment sucess
+				_unitOfWork.OrderHeader.UpdateStripePaymentId(cartVM.OrderHeader.Id, session.Id, session.PaymentIntentId); 
+				_unitOfWork.Save();
+
+				// Redirect to Stripe
+				Response.Headers.Add("Location", session.Url);
+				return new StatusCodeResult(303);
+			}
+
+			return RedirectToAction(nameof(OrderConfirmation), new { id = cartVM.OrderHeader.Id });
 		}
-		public IActionResult OrderConfirmation(int OrderHeaderId)
+		public IActionResult OrderConfirmation(int id)
 		{
-			return View(OrderHeaderId);
+			OrderHeader orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == id, includeProperties:"ApplicationUser");
+
+			if (orderHeader.PaymentStatus != SD.PaymentStatusDelayedPayment)
+			{
+				// Customer user
+				var service = new SessionService();
+				Session session = service.Get(orderHeader.SessionId);
+
+				if (session.PaymentStatus.ToLower() == "paid")
+				{
+					_unitOfWork.OrderHeader.UpdateStripePaymentId(orderHeader.Id, session.Id, session.PaymentIntentId);
+					_unitOfWork.OrderHeader.UpdateStatus(orderHeader.Id, SD.StatusApproved, SD.StatusApproved);
+					_unitOfWork.Save();
+				}
+
+			}
+
+			// Empty ShoppingCart
+			List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCart
+				.GetAll(u => u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
+
+			_unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
+			_unitOfWork.Save();
+
+			return View(id);
 		}
 		
 		public IActionResult Plus(int cartId)
