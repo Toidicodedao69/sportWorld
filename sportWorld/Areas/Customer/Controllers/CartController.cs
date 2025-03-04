@@ -27,20 +27,45 @@ namespace sportWorld.Areas.Customer.Controllers
 			ShoppingCartVM cartVM = new()
 			{
 				CartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Product").ToList(),
-				OrderTotal = 0
+				OrderHeader = new()
 			};
 
 			foreach(var cart in cartVM.CartList)
 			{
 				cart.Price = GetPriceBasedOnQuantity(cart);
-				cartVM.OrderTotal += cart.Price * cart.Count;
+				cartVM.OrderHeader.OrderTotal += cart.Price * cart.Count;
 			}
 
             return View(cartVM);
         }
 		public IActionResult OrderSummary()
 		{
-			return View();
+			var claimsIdentity = (ClaimsIdentity)User.Identity;
+			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+			ShoppingCartVM cartVM = new()
+			{
+				CartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Product").ToList(),
+				OrderHeader = new()
+			};
+
+			cartVM.OrderHeader.ApplicationUser = _unitOfWork.ApplicationUser.Get(u => u.Id == userId);
+
+			cartVM.OrderHeader.Name = cartVM.OrderHeader.ApplicationUser.Name;
+			cartVM.OrderHeader.PhoneNumber = cartVM.OrderHeader.ApplicationUser.PhoneNumber;
+			cartVM.OrderHeader.StreetAddress = cartVM.OrderHeader.ApplicationUser.StreetAddress;
+			cartVM.OrderHeader.PostalCode = cartVM.OrderHeader.ApplicationUser.PostalCode;
+			cartVM.OrderHeader.City = cartVM.OrderHeader.ApplicationUser.City;
+			cartVM.OrderHeader.State = cartVM.OrderHeader.ApplicationUser.State;
+
+
+			foreach (var cart in cartVM.CartList)
+			{
+				cart.Price = GetPriceBasedOnQuantity(cart);
+				cartVM.OrderHeader.OrderTotal += cart.Price * cart.Count;
+			}
+
+			return View(cartVM);
 		}
 		public IActionResult Plus(int cartId)
 		{
