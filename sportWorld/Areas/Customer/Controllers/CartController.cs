@@ -196,6 +196,8 @@ namespace sportWorld.Areas.Customer.Controllers
 			_unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
 			_unitOfWork.Save();
 
+			TempData["success"] = "Order placed successfully!";
+
 			return View(id);
 		}
 		
