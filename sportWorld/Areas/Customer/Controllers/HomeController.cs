@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using sportWorld.DataAccess.Repository.IRepository;
 using sportWorld.Models;
+using sportWorld.Utility;
 using System.Diagnostics;
 using System.Security.Claims;
 
@@ -20,7 +21,15 @@ namespace sportWorld.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
-            IEnumerable<Product> productList = _unitOfWork.Product.GetAll(includeProperties: "Category");
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (claim != null)
+            {
+                // User logged in -> Get session
+				HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == claim.Value).Count());
+			}
+			IEnumerable<Product> productList = _unitOfWork.Product.GetAll(includeProperties: "Category");
             return View(productList);
         }
 		public IActionResult Details(int productId)
@@ -50,14 +59,17 @@ namespace sportWorld.Areas.Customer.Controllers
                 // Update cart
                 cartFromDb.Count += cart.Count;
                 _unitOfWork.ShoppingCart.Update(cartFromDb);
-            }
-            else
+				_unitOfWork.Save();
+			}
+			else
             {
 				// Add new cart
 				_unitOfWork.ShoppingCart.Add(cart);
+				_unitOfWork.Save();
+                // Set number of unique products in shopping cart
+				HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId).Count());
 			}
 
-			_unitOfWork.Save();
             TempData["success"] = "Cart updated successfully";
 
 			return RedirectToAction(nameof(Index));     // nameof find all Action pages in the current Controller

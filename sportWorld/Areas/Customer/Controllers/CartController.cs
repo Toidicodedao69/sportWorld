@@ -218,6 +218,8 @@ namespace sportWorld.Areas.Customer.Controllers
 			if (cart.Count == 1)
 			{
 				_unitOfWork.ShoppingCart.Remove(cart);
+				HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart
+				.GetAll(u => u.ApplicationUserId == cart.ApplicationUserId).Count() - 1);
 			}
 			else
 			{
@@ -234,6 +236,9 @@ namespace sportWorld.Areas.Customer.Controllers
 			var cart = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId);
 
 			_unitOfWork.ShoppingCart.Remove(cart);
+			// Update session before db save changes
+			HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart
+				.GetAll(u => u.ApplicationUserId == cart.ApplicationUserId).Count() - 1);
 			_unitOfWork.Save();
 
 			return RedirectToAction(nameof(Index));

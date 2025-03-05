@@ -24,5 +24,7 @@ namespace sportWorld.Utility
 		public const string PaymentStatusApproved = "Approved";
 		public const string PaymentStatusDelayedPayment = "DelayedPaymentApproved";
 		public const string PaymentStatusRejected = "Rejected";
+
+		public const string SessionCart = "SessionShoppingCart";
 	}
 }
