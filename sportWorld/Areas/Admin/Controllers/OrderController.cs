@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using sportWorld.DataAccess.Repository.IRepository;
 using sportWorld.Models;
+using sportWorld.Models.ViewModels;
 using sportWorld.Utility;
 using System.Diagnostics;
 
@@ -19,6 +20,15 @@ namespace sportWorld.Areas.Admin.Controllers
         {
             return View();
         }
+		public IActionResult Details(int orderId)
+		{
+			OrderVM orderVM = new()
+			{
+				OrderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == orderId, includeProperties: "ApplicationUser"),
+				OrderDetail = _unitOfWork.OrderDetail.GetAll(u => u.OrderHeaderId == orderId, includeProperties: "Product")
+			};
+			return View(orderVM);
+		}
 
 
 		#region API CALLS
