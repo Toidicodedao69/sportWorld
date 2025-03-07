@@ -28,12 +28,12 @@ namespace sportWorld.DataAccess.DbInitialiser
 			// Add pending migrations
 			try
 			{
-				if (_db.Database.GetPendingMigrations().Count() >= 0)
+				if (_db.Database.GetPendingMigrations().Count() > 0)
 				{
 					_db.Database.Migrate();
 				}
 			} 
-			catch (Exception e) {}
+			catch (Exception e) { }
 
 			// Create roles if they are not yet created
 			if (!_roleManager.RoleExistsAsync(SD.Role_Customer).GetAwaiter().GetResult())
@@ -42,23 +42,24 @@ namespace sportWorld.DataAccess.DbInitialiser
 				_roleManager.CreateAsync(new IdentityRole(SD.Role_Admin)).GetAwaiter().GetResult();
 				_roleManager.CreateAsync(new IdentityRole(SD.Role_Employee)).GetAwaiter().GetResult();
 				_roleManager.CreateAsync(new IdentityRole(SD.Role_Company)).GetAwaiter().GetResult();
+
+				// Create admin user
+				_userManager.CreateAsync(new ApplicationUser()
+				{
+					UserName = "adminproduction@gmail.com",
+					Email = "adminproduction@gmail.com",
+					EmailConfirmed = true,
+					Name = "Admin Production",
+					PhoneNumber = "0123456789",
+					StreetAddress = "123 Street",
+					City = "Melbourne",
+					State = "NSW",
+					PostalCode = "6996"
+				}, "Admin1!").GetAwaiter().GetResult();
+
+				var adminUser = _db.ApplicationUsers.FirstOrDefault(u => u.Email == "adminproduction@gmail.com");
+				_userManager.AddToRoleAsync(adminUser, SD.Role_Admin).GetAwaiter().GetResult();
 			}
-
-			// Create admin user
-			_userManager.CreateAsync(new ApplicationUser()
-			{
-				UserName = "adminproduction@gmail.com",
-				Email = "adminproduction@gmail.com",
-				Name = "Admin Production",
-				PhoneNumber = "0123456789",
-				StreetAddress = "123 Street",
-				City = "Melbourne",
-				State = "NSW",
-				PostalCode = "6996"
-			}, "Admin1!").GetAwaiter().GetResult();
-
-			var adminUser = _db.ApplicationUsers.FirstOrDefault(u => u.Email == "adminproduction@gmail.com");
-			_userManager.AddToRoleAsync(adminUser, SD.Role_Admin).GetAwaiter().GetResult();
 
 			return;
 		}

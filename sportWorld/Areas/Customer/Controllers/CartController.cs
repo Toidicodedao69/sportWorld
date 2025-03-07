@@ -128,7 +128,7 @@ namespace sportWorld.Areas.Customer.Controllers
 
 			if (applicationUser.CompanyId.GetValueOrDefault() == 0)
 			{
-				var domain = "https://localhost:7094";
+				var domain = Request.Scheme + "://" + Request.Host.Value;
 				// Customer user -> redirect to Stripe payment
 				var options = new SessionCreateOptions
 				{

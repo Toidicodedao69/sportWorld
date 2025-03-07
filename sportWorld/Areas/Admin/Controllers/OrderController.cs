@@ -139,7 +139,8 @@ namespace sportWorld.Areas.Admin.Controllers
 			orderVM.OrderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == orderVM.OrderHeader.Id, includeProperties: "ApplicationUser");
 			orderVM.OrderDetail = _unitOfWork.OrderDetail.GetAll(u => u.OrderHeaderId == orderVM.OrderHeader.Id, includeProperties: "Product");
 
-			var domain = "https://localhost:7094";
+			var domain = Request.Scheme + "://" + Request.Host.Value;
+
 			var options = new SessionCreateOptions
 			{
 				SuccessUrl = domain + $"/Admin/Order/PaymentConfirmation?orderHeaderid={orderVM.OrderHeader.Id}",
