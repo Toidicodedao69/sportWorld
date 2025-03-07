@@ -13,7 +13,7 @@ namespace sportWorld.Areas.Admin.Controllers
 {
 	[Area("Admin")]
     [Authorize(Roles = SD.Role_Admin)]
-    public class UserController : Controller
+    public class UserController : Controller  
     {
 		// Use ApplicationDbContext to map role to user
         private readonly ApplicationDbContext _db;
@@ -53,10 +53,32 @@ namespace sportWorld.Areas.Admin.Controllers
 
 			return Json(new { data = userList });
 		}
-		[HttpDelete]
-		public IActionResult Delete(int id)
+		[HttpPost]
+		public IActionResult LockUnlock([FromBody]string id)
 		{
-			return Json(new { success = true, message = "Company deleted successfully!" });
+			var userFromDb = _db.ApplicationUsers.FirstOrDefault(u => u.Id == id);
+
+			if (userFromDb == null)
+			{
+				return Json(new { success = false, message = "User not found or existed" });
+			}
+
+			if (userFromDb.LockoutEnd != null && userFromDb.LockoutEnd > DateTime.Now)
+			{
+				// User locked -> unlock
+				userFromDb.LockoutEnd = DateTime.Now;
+				_db.SaveChanges();
+				return Json(new { success = true, message = "Company unlocked successfully!" });
+			}
+			else
+			{
+				// User unlocked -> lock
+				userFromDb.LockoutEnd = DateTime.Now.AddYears(100);
+				_db.SaveChanges();
+				return Json(new { success = true, message = "Company locked successfully!" });
+			}
+
+			
 		}
 		#endregion
 	}
