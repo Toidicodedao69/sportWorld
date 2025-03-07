@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using sportWorld.Utility;
 using Stripe;
+using sportWorld.DataAccess.DbInitialiser;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +42,7 @@ builder.Services.AddSession(options =>
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddScoped<IDbInitialiser, DbInitialiser>();
 
 var app = builder.Build();
 
@@ -59,6 +61,7 @@ app.UseRouting();
 app.UseAuthentication(); // Check for valid login credentials
 app.UseAuthorization();  // Give persmissions based on user roles (customer, manager, admin, etc.)
 app.UseSession();
+SeedDatabase();
 app.MapRazorPages(); // Map Razor pages routing for identity area
 
 app.MapControllerRoute(
@@ -66,3 +69,12 @@ app.MapControllerRoute(
     pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+// Seed db everytime the app is started
+void SeedDatabase()
+{
+    using (var scope = app.Services.CreateScope()) {
+        var DbInitialiser = scope.ServiceProvider.GetRequiredService<IDbInitialiser>();
+        DbInitialiser.Initialise();
+    }
+}

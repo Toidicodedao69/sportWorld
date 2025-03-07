@@ -187,6 +187,7 @@ namespace sportWorld.Areas.Customer.Controllers
 					_unitOfWork.Save();
 				}
 
+				HttpContext.Session.Clear();
 			}
 
 			// Empty ShoppingCart
