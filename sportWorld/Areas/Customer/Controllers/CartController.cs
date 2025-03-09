@@ -37,6 +37,7 @@ namespace sportWorld.Areas.Customer.Controllers
 
 			foreach(var cart in cartVM.CartList)
 			{
+				cart.Product.Category = _unitOfWork.Category.Get(u => u.Id == cart.Product.CategoryId);
 				cart.Price = GetPriceBasedOnQuantity(cart);
 				cartVM.OrderHeader.OrderTotal += cart.Price * cart.Count;
 			}
