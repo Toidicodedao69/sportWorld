@@ -8,6 +8,9 @@ using System.Drawing.Text;
 using sportWorld.Models;
 using sportWorld.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
+using sportWorld.Models.ViewModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Identity;
 
 namespace sportWorld.Areas.Admin.Controllers
 {
@@ -17,15 +20,70 @@ namespace sportWorld.Areas.Admin.Controllers
     {
 		// Use ApplicationDbContext to map role to user
         private readonly ApplicationDbContext _db;
-		public UserController(ApplicationDbContext db)
+		private readonly UserManager<IdentityUser> _userManager;
+
+		public UserController(ApplicationDbContext db, UserManager<IdentityUser> userManager)
 		{
             _db = db;
+			_userManager = userManager;
 		}
 		public IActionResult Index()
         {
 			return View();
         }
-        
+		public IActionResult RoleManagement(string userId)
+		{
+			var roleId = _db.UserRoles.FirstOrDefault(u => u.UserId == userId).RoleId;
+
+			UserVM userVM = new UserVM()
+			{
+				ApplicationUser = _db.ApplicationUsers.Include("Company").FirstOrDefault(u => u.Id == userId),
+				RoleList = _db.Roles.ToList().Select(u => new SelectListItem
+				{
+					Text = u.Name,
+					Value = u.Name
+				}),
+				CompanyList = _db.Companies.ToList().Select(u => new SelectListItem
+				{
+					Text = u.Name,
+					Value = u.Id.ToString()
+				})
+			};
+
+			userVM.ApplicationUser.Role = _db.Roles.FirstOrDefault(u => u.Id == roleId).Name;
+
+			return View(userVM);
+		}
+		[HttpPost]
+		public IActionResult RoleManagement(UserVM userVM)
+		{
+			var roleId = _db.UserRoles.FirstOrDefault(u => u.UserId == userVM.ApplicationUser.Id).RoleId;
+			var oldRole = _db.Roles.FirstOrDefault(u => u.Id == roleId).Name;
+			var applicationUser = _db.ApplicationUsers.FirstOrDefault(u => u.Id == userVM.ApplicationUser.Id);
+
+			applicationUser.Name = userVM.ApplicationUser.Name;
+
+			if (oldRole != userVM.ApplicationUser.Role)
+			{
+				_userManager.RemoveFromRoleAsync(applicationUser, oldRole).GetAwaiter().GetResult();
+				_userManager.AddToRoleAsync(applicationUser, userVM.ApplicationUser.Role).GetAwaiter().GetResult();
+			}
+
+			if (userVM.ApplicationUser.Role == SD.Role_Company)
+			{
+				// Assign new company for company users
+				applicationUser.CompanyId = userVM.ApplicationUser.CompanyId;
+			}
+			else
+			{
+				applicationUser.CompanyId = null;
+			}
+
+			_db.SaveChanges();
+			TempData["success"] = "User role updated successfully!";
+			return RedirectToAction(nameof(Index));
+		}
+
 		// API 
 		#region
 		[HttpGet]

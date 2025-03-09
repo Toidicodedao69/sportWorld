@@ -99,5 +99,15 @@ namespace sportWorld.Areas.Admin.Controllers
             TempData["success"] = "Category deleted successfully!"; // Show notification for only 1 render
             return RedirectToAction("Index");
         }
-    }
+
+        #region 
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            List<Category> categories = _unitOfWork.Category.GetAll().ToList();
+            return Json(new { data = categories });
+        }
+		#endregion
+
+	}
 }
