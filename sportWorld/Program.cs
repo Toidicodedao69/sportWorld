@@ -13,7 +13,16 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+        // Handle serverless db connection error
+        sqlServerOptionsAction: sqlOptions =>
+        {
+            sqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 5,
+                maxRetryDelay: TimeSpan.FromSeconds(5),
+                errorNumbersToAdd: null);
+        })
+   );
 
 builder.Services.Configure<StripeKeyConfiguration>(builder.Configuration.GetSection("Stripe")); // Injects Stripe configurations
 

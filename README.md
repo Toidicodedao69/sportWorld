@@ -15,7 +15,7 @@ You can access the website here: [https://sportworld.azurewebsites.net/](https:/
 # Tech Stack 
 
 <div style="display: inline-block; font-size: 22px;">
-    <img src="documents/aspdotnetcore.webp" alt="asp.net core" width="25" height="25"> ASP.NET CORE |
+    <img src="documents/aspdotnetcore.webp" alt="asp.net core" width="25" height="25"> ASP.NET Core |
     <img src="https://github.com/devicons/devicon/blob/master/icons/azure/azure-original.svg" alt="azure" width="25" height="25"> Azure Cloud |
     <img src="https://github.com/devicons/devicon/blob/master/icons/githubactions/githubactions-original.svg" alt="github actions" width="25" height="25"> GitHub Actions
 </div>
