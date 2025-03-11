@@ -61,7 +61,7 @@ namespace sportWorld.Areas.Admin.Controllers
 				if (file != null)
 				{
 					string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-					string productPath = Path.Combine(wwwRootPath, @"images\product");
+					string productPath = Path.Combine(wwwRootPath, @"images\products");
 
 					if (!string.IsNullOrEmpty(productVM.Product.ImageUrl))
 					{
@@ -78,7 +78,7 @@ namespace sportWorld.Areas.Admin.Controllers
 						file.CopyTo(fileStream);
 					}
 
-					productVM.Product.ImageUrl = @"\images\product\" + fileName;
+					productVM.Product.ImageUrl = @"\images\products\" + fileName;
 				}
 
 				if (productVM.Product.Id == 0)

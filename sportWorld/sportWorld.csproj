@@ -31,8 +31,4 @@
     <ProjectReference Include="..\sportWorld.DataAccess\sportWorld.DataAccess.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\images\product\" />
-  </ItemGroup>
-
 </Project>
