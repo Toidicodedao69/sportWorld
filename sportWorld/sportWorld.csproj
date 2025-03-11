@@ -7,15 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\js\category.js" />
-    <Content Remove="wwwroot\js\company.js" />
-    <Content Remove="wwwroot\js\order.js" />
-    <Content Remove="wwwroot\js\product.js" />
-    <Content Remove="wwwroot\js\user.js" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="wwwroot\js\product.js" />
+    <Compile Remove="wwwroot\js\**" />
+    <Content Remove="wwwroot\js\**" />
+    <EmbeddedResource Remove="wwwroot\js\**" />
+    <None Remove="wwwroot\js\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,14 +33,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\images\product\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\js\company.js" />
-    <None Include="wwwroot\js\order.js" />
-    <None Include="wwwroot\js\category.js" />
-    <None Include="wwwroot\js\user.js" />
-    <None Include="wwwroot\js\product.js" />
   </ItemGroup>
 
 </Project>
