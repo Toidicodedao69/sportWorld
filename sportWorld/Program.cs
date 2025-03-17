@@ -12,17 +12,28 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
-        // Handle serverless db connection error
-        sqlServerOptionsAction: sqlOptions =>
-        {
-            sqlOptions.EnableRetryOnFailure(
-                maxRetryCount: 5,
-                maxRetryDelay: TimeSpan.FromSeconds(5),
-                errorNumbersToAdd: null);
-        })
+
+// Access Azure SQL server for production environment
+if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+{
+	builder.Services.AddDbContext<ApplicationDbContext>(options =>
+	options.UseSqlServer(Environment.GetEnvironmentVariable("SQLAZURECONNSTR_DefaultConnection"),
+		// Handle serverless db connection error
+		sqlServerOptionsAction: sqlOptions =>
+		{
+			sqlOptions.EnableRetryOnFailure(
+				maxRetryCount: 5,
+				maxRetryDelay: TimeSpan.FromSeconds(5),
+				errorNumbersToAdd: null);
+		})
    );
+}
+else
+{
+	// Access local SQL server for development environment
+	builder.Services.AddDbContext<ApplicationDbContext>(options =>
+		options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+}
 
 builder.Services.Configure<StripeKeyConfiguration>(builder.Configuration.GetSection("Stripe")); // Injects Stripe configurations
 
