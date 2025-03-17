@@ -10,7 +10,9 @@ Sport World is a online store project that sells sport equipments. Sport World o
 - **Order Management**: Allow admin/employee users to view and process customer orders. All updated details (such as tracking number, courrier number, etc.) will be displayed in customer side.
 - **Product Managements**: Allow admin users to view and add/update/delete products which will automatically be updated in the home page.
 
-You can access the website here: [https://sportworld.azurewebsites.net/](https://sportworld.azurewebsites.net/).
+You can access the website here: [https://sportworld.azurewebsites.net/](https://sportworld.azurewebsites.net/). **(The site will take 2-3 minutes to start up)**
+
+Please use this [credentials](documents/credentials.txt) to log in as **admin** and access all functionalities of the website.
 
 # Tech Stack 
 
