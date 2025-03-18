@@ -55,9 +55,9 @@ namespace sportWorld.Areas.Admin.Controllers
 		[HttpPost] // Specify actions when the form is submitted 
 		public IActionResult Upsert(ProductVM productVM, IFormFile? file)
 		{
-			if (productVM.Product.ListPrice >= productVM.Product.Price)
+			if (productVM.Product.ListPrice <= productVM.Product.Price)
 			{
-				ModelState.AddModelError("name", "price must be lower than listprice");
+				ModelState.AddModelError("Product.Price", "Price must be lower than listprice");
 			}
 			if (ModelState.IsValid) // Validate before adding to db
 			{
@@ -101,14 +101,11 @@ namespace sportWorld.Areas.Admin.Controllers
 			}
 			else
 			{
-				productVM = new()
+				productVM.CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
 				{
-					CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
-					{
-						Text = u.Name,
-						Value = u.Id.ToString()
-					})
-				};
+					Text = u.Name,
+					Value = u.Id.ToString()
+				});
 
 				return View(productVM);
 			}
