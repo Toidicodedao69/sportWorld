@@ -38,6 +38,6 @@ namespace sportWorld.Models
         [ValidateNever] // Turn off validation
         public Category Category { get; set; }
         [ValidateNever]
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
     }
 }

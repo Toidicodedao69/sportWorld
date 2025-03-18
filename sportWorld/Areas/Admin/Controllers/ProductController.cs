@@ -51,9 +51,14 @@ namespace sportWorld.Areas.Admin.Controllers
 				return View(productVM);
 			}
 		}
+
 		[HttpPost] // Specify actions when the form is submitted 
 		public IActionResult Upsert(ProductVM productVM, IFormFile? file)
 		{
+			if (productVM.Product.ListPrice >= productVM.Product.Price)
+			{
+				ModelState.AddModelError("name", "price must be lower than listprice");
+			}
 			if (ModelState.IsValid) // Validate before adding to db
 			{
 				string wwwRootPath = _webHostEnvironment.WebRootPath;
@@ -108,36 +113,6 @@ namespace sportWorld.Areas.Admin.Controllers
 				return View(productVM);
 			}
 		}
-		
-		//public IActionResult Delete(int? id)
-		//{
-		//	if (id == null || id == 0)
-		//	{
-		//		return NotFound();
-		//	}
-		//	Product? productFromDb = _unitOfWork.Product.Get(u => u.Id == id);
-
-		//	if (productFromDb == null)
-		//	{
-		//		return NotFound();
-		//	}
-		//	return View(productFromDb);
-		//}
-		//[HttpPost, ActionName("Delete")] // Specify actions when the form is submitted 
-		//public IActionResult DeletePOST(int? id) // This action method's name is still "Delete" as specified in ActionName annotation
-		//{
-		//	Product? obj = _unitOfWork.Product.Get(u => u.Id == id);
-
-		//	if (obj == null)
-		//	{
-		//		return NotFound();
-		//	}
-
-		//	_unitOfWork.Product.Remove(obj);
-		//	_unitOfWork.Save();
-		//	TempData["success"] = "Product deleted successfully!"; // Show notification for only 1 render
-		//	return RedirectToAction("Index");
-		//}
 
 		#region API CALLS
 		[HttpGet]
@@ -156,12 +131,14 @@ namespace sportWorld.Areas.Admin.Controllers
 			{
 				return Json(new {success = false, message = "Error while deleting"});
 			}
-
-			var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, product.ImageUrl.TrimStart('\\'));
-
-			if (System.IO.File.Exists(oldImagePath))
+			
+			if (product.ImageUrl != null)
 			{
-				System.IO.File.Delete(oldImagePath);
+				var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, product.ImageUrl.TrimStart('\\'));
+				if (System.IO.File.Exists(oldImagePath))
+				{
+					System.IO.File.Delete(oldImagePath);
+				}
 			}
 
 			_unitOfWork.Product.Remove(product);
