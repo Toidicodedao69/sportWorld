@@ -1,14 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using sportWorld.DataAccess.Repository.IRepository;
 using sportWorld.Models;
 using sportWorld.Models.ViewModels;
 using sportWorld.Utility;
 using Stripe;
 using Stripe.Checkout;
+using Stripe.Climate;
 using System.Net.Quic;
 using System.Security.Claims;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace sportWorld.Areas.Customer.Controllers
 {
@@ -17,12 +21,14 @@ namespace sportWorld.Areas.Customer.Controllers
 	public class CartController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+		private readonly IEmailSender _emailSender;
 		[BindProperty] // Keep properties for all action methods after populating -> Only needs to populate once
 		public ShoppingCartVM cartVM { get; set; }
 		
-		public CartController(IUnitOfWork unitOfWork)
+		public CartController(IUnitOfWork unitOfWork, IEmailSender emailSender)
 		{
 			_unitOfWork = unitOfWork;
+			_emailSender = emailSender;
 		}
 		public IActionResult Index()
         {
@@ -189,6 +195,15 @@ namespace sportWorld.Areas.Customer.Controllers
 				}
 
 				HttpContext.Session.Clear();
+
+				var domain = Request.Scheme + "://" + Request.Host.Value;
+				var order_status_url = domain + $"/Admin/Order/Details?orderId={orderHeader.Id}";
+
+				_emailSender.SendEmailAsync(orderHeader.ApplicationUser.Email, "Sport World - Order Confirmation", 
+				$"<p>Your order has been placed successfully<br>" +
+				$"<strong>Order number:</strong> {orderHeader.Id}<br>" +
+				$"You can check the order status <a href={order_status_url}>here</a><br><br>" +
+				$"Thank you for shopping at Sport World!</p>");
 			}
 
 			// Empty ShoppingCart

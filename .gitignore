@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 # Do not update images
 sportWorld/wwwroot/images/*
+/sportWorld/appsettings.Development.json

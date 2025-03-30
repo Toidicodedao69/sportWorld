@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using sportWorld.DataAccess.Repository.IRepository;
 using sportWorld.Models;
@@ -15,11 +16,13 @@ namespace sportWorld.Areas.Admin.Controllers
 	public class OrderController : Controller
 	{
 		private readonly IUnitOfWork _unitOfWork;
+		private readonly IEmailSender _emailSender;
 		[BindProperty]
 		public OrderVM orderVM { get; set; }
-		public OrderController(IUnitOfWork unitOfWork)
+		public OrderController(IUnitOfWork unitOfWork, IEmailSender emailSender)
 		{
 			_unitOfWork = unitOfWork;
+			_emailSender = emailSender;
 		}
 		public IActionResult Index()
 		{
@@ -47,7 +50,7 @@ namespace sportWorld.Areas.Admin.Controllers
 			orderHeaderFromDb.City = orderVM.OrderHeader.City;
 			orderHeaderFromDb.State = orderVM.OrderHeader.State;
 			orderHeaderFromDb.PostalCode = orderVM.OrderHeader.PostalCode;
-			
+
 			if (!string.IsNullOrEmpty(orderVM.OrderHeader.CarrierNumber))
 			{
 				orderHeaderFromDb.CarrierNumber = orderVM.OrderHeader.CarrierNumber;
@@ -83,7 +86,8 @@ namespace sportWorld.Areas.Admin.Controllers
 		[Authorize(Roles = SD.Role_Admin + "," + SD.Role_Employee)]
 		public IActionResult ShipOrder()
 		{
-			var orderHeaderFromDb = _unitOfWork.OrderHeader.Get(u => u.Id == orderVM.OrderHeader.Id);
+			var orderHeaderFromDb = _unitOfWork.OrderHeader
+				.Get(u => u.Id == orderVM.OrderHeader.Id, includeProperties: "ApplicationUser");
 
 			orderHeaderFromDb.TrackingNumber = orderVM.OrderHeader.TrackingNumber;
 			orderHeaderFromDb.CarrierNumber = orderVM.OrderHeader.CarrierNumber;
@@ -94,10 +98,13 @@ namespace sportWorld.Areas.Admin.Controllers
 			{
 				orderHeaderFromDb.PaymentDueDate = DateOnly.FromDateTime(DateTime.Now.AddDays(15));
 			}
-			
+
 			_unitOfWork.OrderHeader.Update(orderHeaderFromDb);
 			_unitOfWork.Save();
+
 			TempData["success"] = "Order status updated successfully";
+			_emailSender.SendEmailAsync(orderHeaderFromDb.ApplicationUser.Email, "Sport World - Order Arrived",
+				$"<p>Your order number <strong>{orderHeaderFromDb.Id}</strong>> has arrived! <br><br> Thank you for shopping with Sport World! </p>");
 
 			return RedirectToAction(nameof(Details), new { orderId = orderHeaderFromDb.Id });
 		}
