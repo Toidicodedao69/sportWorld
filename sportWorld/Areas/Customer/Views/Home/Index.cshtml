@@ -4,21 +4,30 @@
     var groupedProducts = Model.GroupBy(p => p.Category.Name);
 }
 
+
 <div class="container mt-4">
+    <div class="d-flex justify-content-end">
+        <form asp-area="Customer" asp-controller="Home" asp-action="Index">
+            <div class="d-inline-flex">
+                <input type="text" name="productName" placeholder="Search for products" class="form-control"/>
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
+    </div>
     @foreach (var categoryGroup in groupedProducts)
     {
         <div class="mb-5">
-            <h2 class="text-center fw-bold">@categoryGroup.Key</h2>
+            <h3 class="text-center fw-bold">@categoryGroup.Key</h3>
             <div class="row">
                 @foreach (var product in categoryGroup)
                 {
-                    <div class="col-lg-3 col-md-4 col-sm-6 mb-2">
+                    <div class="col-lg-2 col-md-3 col-sm-4 mb-2">
                         <div class="card shadow-lg border-0 rounded mt-2">
                             <div class="ratio ratio-1x1">
                                 <img src="@product.ImageUrl" class="card-img-top rounded-top" />
                             </div>
                             <div class="card-body text-center">
-                                <h5 class="card-title text-dark">@product.Name</h5>
+                                <p class="card-title text-dark"><b>@product.Name</b></p>
                                 <p class="text-muted mb-1">
                                     <span class="text-decoration-line-through">@product.ListPrice.ToString("c")</span>
                                     <span class="text-success fw-bold ms-2">@product.Price.ToString("c")</span>
