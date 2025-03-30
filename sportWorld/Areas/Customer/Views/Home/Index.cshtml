@@ -1,46 +1,65 @@
-﻿@model IEnumerable<Product>
-
-@{
-    var groupedProducts = Model.GroupBy(p => p.Category.Name);
-}
-
+﻿@model HomeVM
 
 <div class="container mt-4">
-    <div class="d-flex justify-content-end">
-        <form asp-area="Customer" asp-controller="Home" asp-action="Index">
+    <h1 class="text-center my-5">Shop your favourite sport gears now!</h1>
+
+    <div class="mb-5">
+        <form id="filter" asp-area="Customer" asp-controller="Home" asp-action="Index" class="d-flex justify-content-between">
+            <div class="d-inline-flex align-items-center">
+                <span class="form-label me-2">Category</span>
+                <select id="CategoryFilter" asp-for="@Model.categoryFilter" asp-items="@Model.categoryList" class="form-select">
+                    <option value="all">All</option>
+                </select>
+            </div>
             <div class="d-inline-flex">
-                <input type="text" name="productName" placeholder="Search for products" class="form-control"/>
+                <input asp-for="@Model.nameFilter" placeholder="Search for products" class="form-control" />
                 <button type="submit" class="btn btn-primary">Search</button>
             </div>
         </form>
     </div>
-    @foreach (var categoryGroup in groupedProducts)
+
+    @if (Model.categoryFilter != null && Model.categoryFilter != "all")
     {
-        <div class="mb-5">
-            <h3 class="text-center fw-bold">@categoryGroup.Key</h3>
-            <div class="row">
-                @foreach (var product in categoryGroup)
-                {
-                    <div class="col-lg-2 col-md-3 col-sm-4 mb-2">
-                        <div class="card shadow-lg border-0 rounded mt-2">
-                            <div class="ratio ratio-1x1">
-                                <img src="@product.ImageUrl" class="card-img-top rounded-top" />
-                            </div>
-                            <div class="card-body text-center">
-                                <p class="card-title text-dark"><b>@product.Name</b></p>
-                                <p class="text-muted mb-1">
-                                    <span class="text-decoration-line-through">@product.ListPrice.ToString("c")</span>
-                                    <span class="text-success fw-bold ms-2">@product.Price.ToString("c")</span>
-                                </p>
-                            </div>
-                            <div class="card-footer bg-white border-0">
-                                <a asp-action="Details" asp-route-productId="@product.Id"
-                                   class="btn btn-outline-primary w-100">View Details</a>
-                            </div>
+        <h3 id="CategorySelected" class="text-center"></h3>
+    }
+
+    <div class="mb-5">
+        <div class="row">
+            @foreach (var product in Model.productList)
+            {
+                <div class="col-lg-2 col-md-3 col-sm-4 mb-2">
+                    <div class="card shadow-lg border-0 rounded mt-2">
+                        <div class="ratio ratio-1x1">
+                            <img src="@product.ImageUrl" class="card-img-top rounded-top" />
+                        </div>
+                        <div class="card-body text-center">
+                            <p class="card-title text-dark"><b>@product.Name</b></p>
+                            <p class="text-muted mb-1">
+                                <span class="text-decoration-line-through">@product.ListPrice.ToString("c")</span>
+                                <span class="text-success fw-bold ms-2">@product.Price.ToString("c")</span>
+                            </p>
+                        </div>
+                        <div class="card-footer bg-white border-0">
+                            <a asp-action="Details" asp-route-productId="@product.Id"
+                               class="btn btn-outline-primary w-100">View Details</a>
                         </div>
                     </div>
-                }
-            </div>
+                </div>
+            }
         </div>
-    }
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#CategoryFilter').change(function () {
+                $('#filter').submit();
+
+            })
+
+            var category = $('#CategoryFilter Option:Selected').text();
+            $('#CategorySelected').text(category);
+        })
+    </script>
+}

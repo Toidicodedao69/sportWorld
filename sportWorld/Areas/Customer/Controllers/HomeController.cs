@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using sportWorld.DataAccess.Repository.IRepository;
 using sportWorld.Models;
+using sportWorld.Models.ViewModels;
 using sportWorld.Utility;
 using System.Diagnostics;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace sportWorld.Areas.Customer.Controllers
 {
@@ -19,19 +21,44 @@ namespace sportWorld.Areas.Customer.Controllers
 			_unitOfWork = unitOfWork;
 		}
 
-		public IActionResult Index(string productName)
+		public IActionResult Index()
 		{
-			IEnumerable<Product> productList;
+			HomeVM homeVM = new HomeVM()
+			{
+				productList = _unitOfWork.Product.GetAll(includeProperties: "Category"),
+				categoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
+				{
+					Text = u.Name,
+					Value = u.Id.ToString()
+				})
+			};
+			
+			return View(homeVM);
+		}
+		[HttpPost]
+		public IActionResult Index(HomeVM homeVM)
+		{
+			IEnumerable<Product> productList = _unitOfWork.Product.GetAll(includeProperties: "Category");
 
-			if (!String.IsNullOrEmpty(productName))
+			// Filter by product category first
+			if (homeVM.categoryFilter != "all")
 			{
-				productList = _unitOfWork.Product.GetAll(u => u.Name.ToLower().Contains(productName.ToLower()), includeProperties: "Category");
-			} else
+				productList = productList.Where(u => u.CategoryId.ToString() == homeVM.categoryFilter);
+			}
+			// Filter by product name second
+			if (!String.IsNullOrEmpty(homeVM.nameFilter))
 			{
-				productList = _unitOfWork.Product.GetAll(includeProperties: "Category");
+				productList = productList.Where(u => u.Name.ToLower().Contains(homeVM.nameFilter.ToLower()));
 			}
 
-			return View(productList);
+			homeVM.productList = productList;
+			homeVM.categoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
+			{
+				Text = u.Name,
+				Value = u.Id.ToString()
+			});
+
+			return View(homeVM);
 		}
 		public IActionResult Details(int productId)
 		{
