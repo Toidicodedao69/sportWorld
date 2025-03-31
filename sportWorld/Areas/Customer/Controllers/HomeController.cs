@@ -21,7 +21,7 @@ namespace sportWorld.Areas.Customer.Controllers
 		{
 			_logger = logger;
 			_unitOfWork = unitOfWork;
-			_pageSize = 2;
+			_pageSize = 8;
 		}
 
 		public IActionResult Index()

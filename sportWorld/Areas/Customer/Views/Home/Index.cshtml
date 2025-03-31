@@ -27,7 +27,7 @@
         <div class="row">
             @foreach (var product in Model.productList)
             {
-                <div class="col-lg-2 col-md-3 col-sm-4 mb-2">
+                <div class="col-lg-3 col-md-3 col-sm-4 mb-2">
                     <div class="card shadow-lg border-0 rounded mt-2">
                         <div class="ratio ratio-1x1">
                             <img src="@product.ImageUrl" class="card-img-top rounded-top" />
@@ -47,17 +47,19 @@
                 </div>
             }
         </div>
-        <div>
+        <div class="mt-5">
             @{
                 var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
                 var nextDisabled = !Model.HasNextPage ? "disabled" : "";
             }
-            <form asp-area="Customer" asp-controller="Home" asp-action="Index">
+            <form asp-area="Customer" asp-controller="Home" asp-action="Index" class="d-flex justify-content-between">
+                @* Populate current model properties *@
                 <input name="pageNumber" value="@Model.pageNumber" hidden />
                 <input name="categoryFilter" value="@Model.categoryFilter" hidden />
-                <input asp-for="@Model.TotalPages" hidden />
-                <button type="submit" name="action" value="previous" class="btn btn-default @prevDisabled">Previous Page</button>
-                <button type="submit" name="action" value="next" class="btn btn-default @nextDisabled">Next Page</button>
+                <input name="nameFilter" value="@Model.nameFilter" hidden />
+
+                <button type="submit" name="action" value="previous" class="btn btn-outline-primary w-auto @prevDisabled">Previous Page</button>
+                <button type="submit" name="action" value="next" class="btn btn-outline-primary w-auto @nextDisabled">Next Page</button>
             </form>
 
         </div>
