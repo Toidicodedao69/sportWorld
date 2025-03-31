@@ -27,9 +27,18 @@ Please use this [credentials](documents/credentials.txt) to log in as **admin** 
 # Architecture & Design Patterns
 
 ## Model-View-Controller Architecture
+Sport World uses the Model-View_Controller architecture to separate the application into specific layer of concerns:
+
+- **Model**: Contains database schema and implementation of accessing data.
+- **View**: Contains the application's user interface and layouts.
+- **Controller**: Defines all application logic and handle user request to update views.
+
+<br>
+<img src="documents/MVC-diagram.png" alt="mvc diagram">
 
 ## N-Tier Architecture
 
-## IRepository Pattern
+## IRepository
 
 ## IUnitOfWork Pattern
+
