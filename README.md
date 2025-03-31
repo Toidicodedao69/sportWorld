@@ -4,9 +4,11 @@
 
 Sport World is a online store project that sells sport equipments. Sport World offers the following features:
 
+- **Search/filter Products**: Easily find your favourite sport gears by searching by name or filtering by categories. 
 - **Shopping Cart**: Keeps track of all products that customers have added. The cart will display the quantity, price of each product, and the total price of the order.
 - **Payment**: Secured online payment with a wide range of card brands supported.
-- **Authorisation**: Include multiple user types (admin, employee, company, customer) with corressponding access and functionality.
+- **Order tracking & Email**: Tracks order status and automatically send notifications via email to customers about order updates.
+- **Authorisation**: Provide multiple user types (admin, employee, company, customer) with corressponding access and functionality.
 - **Order Management**: Allow admin/employee users to view and process customer orders. All updated details (such as tracking number, courrier number, etc.) will be displayed in customer side.
 - **Product Managements**: Allow admin users to view and add/update/delete products which will automatically be updated in the home page.
 
