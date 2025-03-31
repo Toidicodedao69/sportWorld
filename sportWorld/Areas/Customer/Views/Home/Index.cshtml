@@ -27,12 +27,12 @@
         <div class="row">
             @foreach (var product in Model.productList)
             {
-                <div class="col-lg-3 col-md-3 col-sm-4 mb-2">
-                    <div class="card shadow-lg border-0 rounded mt-2">
+                <div class="col-lg-3 col-md-3 col-sm-4 mb-5">
+                    <div class="card shadow-lg border-0 rounded mt-2" style="height: 100%">
                         <div class="ratio ratio-1x1">
                             <img src="@product.ImageUrl" class="card-img-top rounded-top" />
                         </div>
-                        <div class="card-body text-center">
+                        <div class="card-body align-content-center text-center">
                             <p class="card-title text-dark"><b>@product.Name</b></p>
                             <p class="text-muted mb-1">
                                 <span class="text-decoration-line-through">@product.ListPrice.ToString("c")</span>
