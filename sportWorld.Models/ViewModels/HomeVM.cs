@@ -16,5 +16,10 @@ namespace sportWorld.Models.ViewModels
 		public string? nameFilter { get; set; }
 
 		public string? categoryFilter { get; set; }
+		public int pageNumber { get; set; }
+		public int TotalPages { get; set; }
+		public bool HasPreviousPage => pageNumber > 1;
+		public bool HasNextPage => pageNumber < TotalPages;
+
 	}
 }

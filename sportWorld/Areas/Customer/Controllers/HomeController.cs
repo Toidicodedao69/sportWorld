@@ -7,6 +7,7 @@ using sportWorld.Utility;
 using System.Diagnostics;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.FlowAnalysis;
 
 namespace sportWorld.Areas.Customer.Controllers
 {
@@ -15,17 +16,23 @@ namespace sportWorld.Areas.Customer.Controllers
 	{
 		private readonly ILogger<HomeController> _logger;
 		private readonly IUnitOfWork _unitOfWork;
+		private readonly int _pageSize;
 		public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork)
 		{
 			_logger = logger;
 			_unitOfWork = unitOfWork;
+			_pageSize = 2;
 		}
 
 		public IActionResult Index()
 		{
+			IQueryable<Product> productList = _unitOfWork.Product.GetAllQueryable(includeProperties: "Category");
+
 			HomeVM homeVM = new HomeVM()
 			{
-				productList = _unitOfWork.Product.GetAll(includeProperties: "Category"),
+				pageNumber = 1,
+				TotalPages = (int)Math.Ceiling(productList.Count() / (double)_pageSize),
+				productList = CreatePage(productList, 1, _pageSize),
 				categoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
 				{
 					Text = u.Name,
@@ -36,12 +43,45 @@ namespace sportWorld.Areas.Customer.Controllers
 			return View(homeVM);
 		}
 		[HttpPost]
-		public IActionResult Index(HomeVM homeVM)
+		public IActionResult Index(HomeVM homeVM, string action)
 		{
-			IEnumerable<Product> productList = _unitOfWork.Product.GetAll(includeProperties: "Category");
+			IQueryable<Product> productList = _unitOfWork.Product.GetAllQueryable(includeProperties: "Category");
+
+			// If the pagination buttons are clicked
+			if (action == "next")
+			{
+				homeVM.pageNumber += 1;
+			}
+			else if (action == "previous")
+			{
+				homeVM.pageNumber -= 1;
+			}
+			// When the paginations buttons are NOT clicked
+			else
+			{
+				if (homeVM.categoryFilter == "all")
+				{
+					// Reset page number when returning to view all categories
+					homeVM.pageNumber = 1;
+				}
+				// Filter by product category first
+				if (!String.IsNullOrEmpty(homeVM.categoryFilter) && homeVM.categoryFilter != "all")
+				{
+					productList = productList.Where(u => u.CategoryId.ToString() == homeVM.categoryFilter);
+					// Reset page number for the first time
+					homeVM.pageNumber = 1;
+				}
+				// Filter by product name second
+				if (!String.IsNullOrEmpty(homeVM.nameFilter))
+				{
+					productList = productList.Where(u => u.Name.ToLower().Contains(homeVM.nameFilter.ToLower()));
+					// Reset page number for the first time
+					homeVM.pageNumber = 1;
+				}
+			}
 
 			// Filter by product category first
-			if (homeVM.categoryFilter != "all")
+			if (!String.IsNullOrEmpty(homeVM.categoryFilter) && homeVM.categoryFilter != "all")
 			{
 				productList = productList.Where(u => u.CategoryId.ToString() == homeVM.categoryFilter);
 			}
@@ -51,7 +91,8 @@ namespace sportWorld.Areas.Customer.Controllers
 				productList = productList.Where(u => u.Name.ToLower().Contains(homeVM.nameFilter.ToLower()));
 			}
 
-			homeVM.productList = productList;
+			homeVM.TotalPages = (int)Math.Ceiling(productList.Count() / (double)_pageSize);
+			homeVM.productList = CreatePage(productList, homeVM.pageNumber, _pageSize);
 			homeVM.categoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
 			{
 				Text = u.Name,
@@ -59,6 +100,10 @@ namespace sportWorld.Areas.Customer.Controllers
 			});
 
 			return View(homeVM);
+		}
+		public IEnumerable<Product> CreatePage(IQueryable<Product> source, int pageIndex, int pageSize)
+		{
+			return source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
 		}
 		public IActionResult Details(int productId)
 		{

@@ -47,6 +47,20 @@
                 </div>
             }
         </div>
+        <div>
+            @{
+                var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+                var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+            }
+            <form asp-area="Customer" asp-controller="Home" asp-action="Index">
+                <input name="pageNumber" value="@Model.pageNumber" hidden />
+                <input name="categoryFilter" value="@Model.categoryFilter" hidden />
+                <input asp-for="@Model.TotalPages" hidden />
+                <button type="submit" name="action" value="previous" class="btn btn-default @prevDisabled">Previous Page</button>
+                <button type="submit" name="action" value="next" class="btn btn-default @nextDisabled">Next Page</button>
+            </form>
+
+        </div>
     </div>
 </div>
 
