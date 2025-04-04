@@ -27,7 +27,7 @@ Please use this [credentials](documents/credentials.txt) to log in as **admin** 
 # Architecture & Design Patterns
 
 ## Model-View-Controller Architecture
-Sport World uses the Model-View_Controller architecture to separate the application into specific layer of concerns:
+Sport World uses the Model-View-Controller architecture to separate the application into specific layer of concerns:
 
 - **Model**: Contains database schema and implementation of accessing data.
 - **View**: Contains the application's user interface and layouts.
@@ -35,10 +35,27 @@ Sport World uses the Model-View_Controller architecture to separate the applicat
 
 <br>
 <img src="documents/MVC-diagram.png" alt="mvc diagram">
+<p align="center"><i>Model-View-Controller Diagram</i></p>
 
-## N-Tier Architecture
 
-## IRepository
+## Repository and UnitOfWork Pattern
+Sport World also implements the Repository and UnitOfWork Pattern to provide an abstract layer over data accessing.
 
-## IUnitOfWork Pattern
+**Implementaion Details:**
+- Each table/aggregate root is a repository with name format `(TableName)Repository`.
+- All repositories are child of the `Repository` class. This `Repositories` class contains the implementation of all repositories' common methods.
+- Each repository can have its own unique method, which is abstracted in its corresponding interface `<<I(TableName)Repository>>`.
+- The `UnitOfWork` class implements `<<IUnitOfWork>>` interface, which contains all repositories interfaces.
+- The `<<IUnitOfWork>>` interface is exposed to client for accessing the repositories.
+
+**Advantages:**
+- The implementation better follows the Dependecy Inversion principle (programming against abstraction not concretion).
+- It makes testing more feasible as the code is not coupled to Entity Framework.
+- Only expose needed functionality by abstracting away `IQueryable`.
+
+<br>
+<img src="documents/UnitOfWork-diagram.png" alt="mvc diagram">
+<p align="center"><i>Repository & UnitOfWork Implementation Diagram</i></p>
+
+
 
