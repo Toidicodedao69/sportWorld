@@ -35,7 +35,19 @@ else
 		options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 }
 
-builder.Services.Configure<StripeKeyConfiguration>(builder.Configuration.GetSection("Stripe")); // Injects Stripe configurations
+// Injects Stripe configurations
+if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+{
+	builder.Services.Configure<StripeKeyConfiguration>(options =>
+	{
+		options.PublishableKey = Environment.GetEnvironmentVariable("Stripe_PublishableKey");
+		options.SecretKey = Environment.GetEnvironmentVariable("Stripe_SecretKey");
+	});
+}
+else
+{
+	builder.Services.Configure<StripeKeyConfiguration>(builder.Configuration.GetSection("Stripe"));
+}
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 builder.Services.ConfigureApplicationCookie(options =>
@@ -76,7 +88,14 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
+if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+{
+	StripeConfiguration.ApiKey = Environment.GetEnvironmentVariable("Stripe_SecretKey");
+} 
+else 
+{
+	StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
+}
 app.UseRouting();
 app.UseAuthentication(); // Check for valid login credentials
 app.UseAuthorization();  // Give persmissions based on user roles (customer, manager, admin, etc.)

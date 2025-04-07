@@ -194,8 +194,6 @@ namespace sportWorld.Areas.Customer.Controllers
 					_unitOfWork.Save();
 				}
 
-				HttpContext.Session.Clear();
-
 				var domain = Request.Scheme + "://" + Request.Host.Value;
 				var order_status_url = domain + $"/Admin/Order/Details?orderId={orderHeader.Id}";
 
@@ -205,6 +203,9 @@ namespace sportWorld.Areas.Customer.Controllers
 				$"You can check the order status <a href={order_status_url}>here</a><br><br>" +
 				$"Thank you for shopping at Sport World!</p>");
 			}
+
+			// Clear shopping cart items count
+			HttpContext.Session.Clear();
 
 			// Empty ShoppingCart
 			List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCart

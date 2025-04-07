@@ -72,9 +72,12 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-2 offset-md-5">
-                        <a asp-action="OrderSummary" class="btn btn-primary border-0 bg-gradient w-100 py-2">Continue</a>
-                    </div>
+                    @if (Model.CartList.Count() > 0)
+                    {
+                        <div class="col-md-2 offset-md-5">
+                            <a asp-action="OrderSummary" class="btn btn-primary border-0 bg-gradient w-100 py-2">Continue</a>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
