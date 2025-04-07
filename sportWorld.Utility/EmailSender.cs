@@ -12,9 +12,12 @@ namespace sportWorld.Utility
 		{
 			if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
 			{
-				_sendGridSecret = _config.GetValue<string>("SendGrid_SecretKey");
+				_sendGridSecret = Environment.GetEnvironmentVariable("SendGrid_SecretKey");
 			}
+			else
+			{
 				_sendGridSecret = _config.GetValue<string>("SendGrid:SecretKey");
+			}
 		}
 		public Task SendEmailAsync(string email, string subject, string htmlMessage)
 		{
