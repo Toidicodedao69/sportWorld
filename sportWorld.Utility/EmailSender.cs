@@ -12,7 +12,7 @@ namespace sportWorld.Utility
 		{
 			if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
 			{
-				_sendGridSecret = Environment.GetEnvironmentVariable("APPSETTING_SendGrid_SecretKey");
+				_sendGridSecret = _config.GetValue<string>("SendGrid_SecretKey");
 			}
 				_sendGridSecret = _config.GetValue<string>("SendGrid:SecretKey");
 		}
